@@ -12,7 +12,7 @@ public struct Keccak {
     public init() {}
     
     public mutating func permute(rounds: Int) {
-        assert((0...24).contains(rounds))
+        assert(stride(from: 12, through: 24, by: 2).contains(rounds))
         for constant: UInt64 in [
             0x0000000000000001, 0x0000000000008082, 0x800000000000808a, 0x8000000080008000,
             0x000000000000808b, 0x0000000080000001, 0x8000000080008081, 0x8000000000008009,
