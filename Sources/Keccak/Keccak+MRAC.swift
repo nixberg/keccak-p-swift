@@ -78,10 +78,8 @@ extension Keccak {
     public func withUnsafeBufferPointer<R>(
         _ body: (UnsafeBufferPointer<Element>) throws -> R
     ) rethrows -> R {
-        try withUnsafePointer(to: self) {
-            try $0.withMemoryRebound(to: Element.self, capacity: count) {
-                try body(UnsafeBufferPointer(start: $0, count: count))
-            }
+        try self.withUnsafeBytes {
+            try $0.withMemoryRebound(to: UInt8.self, body)
         }
     }
     
@@ -89,11 +87,8 @@ extension Keccak {
     public mutating func withUnsafeMutableBufferPointer<R>(
         _ body: (UnsafeMutableBufferPointer<Element>) throws -> R
     ) rethrows -> R {
-        let count = count
-        return try withUnsafeMutablePointer(to: &self) {
-            try $0.withMemoryRebound(to: Element.self, capacity: count) {
-                try body(UnsafeMutableBufferPointer(start: $0, count: count))
-            }
+        try self.withUnsafeMutableBytes {
+            try $0.withMemoryRebound(to: UInt8.self, body)
         }
     }
     
