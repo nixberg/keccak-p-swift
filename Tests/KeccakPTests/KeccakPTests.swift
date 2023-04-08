@@ -1,9 +1,9 @@
-import Keccak
+import KeccakP
 import XCTest
 
-final class KeccakTests: XCTestCase {
+final class KeccakPTests: XCTestCase {
     func testPermutation() {
-        var state = Keccak()
+        var state = State()
         
         state.permute(rounds: 24)
         
@@ -47,7 +47,7 @@ final class KeccakTests: XCTestCase {
     }
     
     func testMRAC() {
-        var state = Keccak()
+        var state = State()
         
         XCTAssertEqual(state.count, 200)
         XCTAssertEqual(state.indices, 0..<200)

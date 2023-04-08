@@ -1,4 +1,4 @@
-extension Keccak: MutableCollection & RandomAccessCollection {
+extension State: MutableCollection & RandomAccessCollection {
     public typealias Element = UInt8
     
     public typealias Index = Int
@@ -73,7 +73,7 @@ extension Keccak: MutableCollection & RandomAccessCollection {
     }
 }
 
-extension Keccak {
+extension State {
     @inline(__always)
     public func withUnsafeBufferPointer<R>(
         _ body: (UnsafeBufferPointer<Element>) throws -> R

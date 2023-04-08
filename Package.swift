@@ -3,17 +3,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "keccak-swift",
+    name: "keccak-p-swift",
     products: [
         .library(
-            name: "Keccak",
-            targets: ["Keccak"]),
+            name: "KeccakP",
+            targets: ["KeccakP"]),
     ],
     targets: [
         .target(
-            name: "Keccak"),
+            name: "KeccakP"),
         .testTarget(
-            name: "KeccakTests",
-            dependencies: ["Keccak"]),
+            name: "KeccakPTests",
+            dependencies: ["KeccakP"]),
     ]
 )
