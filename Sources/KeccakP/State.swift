@@ -47,9 +47,9 @@ public struct State {
     @inline(__always)
     private mutating func rhoAndPi() {
         var lane = rows.0.lanes.1
-        rows.2.lanes.0.swap(with: &lane, rotatedLeft:  1)
-        rows.1.lanes.2.swap(with: &lane, rotatedLeft:  3)
-        rows.2.lanes.1.swap(with: &lane, rotatedLeft:  6)
+        rows.2.lanes.0.swap(with: &lane, rotatedLeft: 01)
+        rows.1.lanes.2.swap(with: &lane, rotatedLeft: 03)
+        rows.2.lanes.1.swap(with: &lane, rotatedLeft: 06)
         rows.3.lanes.2.swap(with: &lane, rotatedLeft: 10)
         rows.3.lanes.3.swap(with: &lane, rotatedLeft: 15)
         rows.0.lanes.3.swap(with: &lane, rotatedLeft: 21)
@@ -57,12 +57,12 @@ public struct State {
         rows.3.lanes.1.swap(with: &lane, rotatedLeft: 36)
         rows.1.lanes.3.swap(with: &lane, rotatedLeft: 45)
         rows.4.lanes.1.swap(with: &lane, rotatedLeft: 55)
-        rows.4.lanes.4.swap(with: &lane, rotatedLeft:  2)
+        rows.4.lanes.4.swap(with: &lane, rotatedLeft: 02)
         rows.0.lanes.4.swap(with: &lane, rotatedLeft: 14)
         rows.3.lanes.0.swap(with: &lane, rotatedLeft: 27)
         rows.4.lanes.3.swap(with: &lane, rotatedLeft: 41)
         rows.3.lanes.4.swap(with: &lane, rotatedLeft: 56)
-        rows.2.lanes.3.swap(with: &lane, rotatedLeft:  8)
+        rows.2.lanes.3.swap(with: &lane, rotatedLeft: 08)
         rows.2.lanes.2.swap(with: &lane, rotatedLeft: 25)
         rows.0.lanes.2.swap(with: &lane, rotatedLeft: 43)
         rows.4.lanes.0.swap(with: &lane, rotatedLeft: 62)
@@ -110,26 +110,25 @@ private struct Row {
     
     @inline(__always)
     mutating func chi() {
-        let t = self
-        lanes.0 ^= ~t.lanes.1 & t.lanes.2
-        lanes.1 ^= ~t.lanes.2 & t.lanes.3
-        lanes.2 ^= ~t.lanes.3 & t.lanes.4
-        lanes.3 ^= ~t.lanes.4 & t.lanes.0
-        lanes.4 ^= ~t.lanes.0 & t.lanes.1
+        lanes = (
+            lanes.0 ^ ~lanes.1 & lanes.2,
+            lanes.1 ^ ~lanes.2 & lanes.3,
+            lanes.2 ^ ~lanes.3 & lanes.4,
+            lanes.3 ^ ~lanes.4 & lanes.0,
+            lanes.4 ^ ~lanes.0 & lanes.1
+        )
     }
 }
 
-private extension UInt64 {
+extension UInt64 {
     @inline(__always)
-    func rotated(left count: Int) -> Self {
-        (self &<< count) | (self &>> (Self.bitWidth - count))
+    fileprivate func rotated(left count: Int) -> Self {
+        self << count | self >> (Self.bitWidth - count)
     }
     
     @inline(__always)
-    mutating func swap(with lane: inout Self, rotatedLeft count: Int) {
-        let temp = self
-        self = lane.rotated(left: count)
-        lane = temp
+    fileprivate mutating func swap(with lane: inout Self, rotatedLeft count: Int) {
+        (self, lane) = (lane.rotated(left: count), self)
     }
 }
 
