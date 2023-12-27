@@ -1,28 +1,33 @@
 public struct State {
-    private var rows: (Row, Row, Row, Row, Row)
+    var rows: (Row, Row, Row, Row, Row)
     
     public init() {
         rows = (.zero, .zero, .zero, .zero, .zero)
     }
     
     public mutating func permute(rounds: Int) {
-        precondition(stride(from: 12, through: 24, by: 2).contains(rounds))
+        let startIndex = 24 &- rounds
+        precondition(startIndex >= 0)
+        precondition(startIndex <= 12)
+        precondition(startIndex.isMultiple(of: 2))
         
-        for constant: UInt64 in [
+        let roundConstants: [UInt64] = [
             0x0000000000000001, 0x0000000000008082, 0x800000000000808a, 0x8000000080008000,
             0x000000000000808b, 0x0000000080000001, 0x8000000080008081, 0x8000000000008009,
             0x000000000000008a, 0x0000000000000088, 0x0000000080008009, 0x000000008000000a,
             0x000000008000808b, 0x800000000000008b, 0x8000000000008089, 0x8000000000008003,
             0x8000000000008002, 0x8000000000000080, 0x000000000000800a, 0x800000008000000a,
             0x8000000080008081, 0x8000000000008080, 0x0000000080000001, 0x8000000080008008,
-        ].suffix(rounds) {
+        ]
+        
+        for index in startIndex..<24 {
             self.theta()
             
             self.rhoAndPi()
             
             self.chi()
             
-            rows.0.lanes.0 ^= constant
+            rows.0.lanes.0 ^= roundConstants[index]
         }
     }
     
@@ -83,7 +88,7 @@ public struct State {
     }
 }
 
-private struct Row {
+struct Row {
     static let zero = Self(lanes: (0, 0, 0, 0, 0))
     
     var lanes: (UInt64, UInt64, UInt64, UInt64, UInt64)
@@ -123,7 +128,7 @@ private struct Row {
 extension UInt64 {
     @inline(__always)
     fileprivate func rotated(left count: Int) -> Self {
-        self << count | self >> (Self.bitWidth - count)
+        self &<< count | self &>> (Self.bitWidth - count)
     }
     
     @inline(__always)
