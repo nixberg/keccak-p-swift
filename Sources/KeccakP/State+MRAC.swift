@@ -1,62 +1,33 @@
 extension State: MutableCollection & RandomAccessCollection {
-    public typealias Element = UInt8
-    
-    public typealias Index = Int
-    
-    @inline(__always)
-    public var startIndex: Index {
+    public var startIndex: Int {
         0
     }
     
-    @inline(__always)
-    public var endIndex: Index {
-        MemoryLayout<Self>.size
+    public var endIndex: Int {
+        200
     }
     
-    @inline(__always)
-    public subscript(position: Index) -> Element {
+    public subscript(index: Int) -> UInt8 {
         get {
-            precondition(indices.contains(position))
+            precondition(indices.contains(index), "Index out of range")
             return self.withUnsafeBufferPointer {
-                $0[position]
+                $0[index]
             }
         }
         set {
-            precondition(indices.contains(position))
+            precondition(indices.contains(index), "Index out of range")
             self.withUnsafeMutableBufferPointer {
-                $0[position] = newValue
+                $0[index] = newValue
             }
         }
     }
     
-    @inline(__always)
-    public var first: Element {
-        get {
-            self[startIndex]
-        }
-        set {
-            self[startIndex] = newValue
-        }
-    }
-    
-    @inline(__always)
-    public var last: Element {
-        get {
-            self[self.index(before: endIndex)]
-        }
-        set {
-            self[self.index(before: endIndex)] = newValue
-        }
-    }
-    
-    @inline(__always)
     public func withContiguousStorageIfAvailable<R>(
         _ body: (UnsafeBufferPointer<Element>) throws -> R
     ) rethrows -> R? {
         try self.withUnsafeBufferPointer(body)
     }
     
-    @inline(__always)
     public mutating func withContiguousMutableStorageIfAvailable<R>(
         _ body: (inout UnsafeMutableBufferPointer<Element>) throws -> R
     ) rethrows -> R? {
@@ -74,7 +45,6 @@ extension State: MutableCollection & RandomAccessCollection {
 }
 
 extension State {
-    @inline(__always)
     public func withUnsafeBufferPointer<R>(
         _ body: (UnsafeBufferPointer<Element>) throws -> R
     ) rethrows -> R {
@@ -83,7 +53,6 @@ extension State {
         }
     }
     
-    @inline(__always)
     public mutating func withUnsafeMutableBufferPointer<R>(
         _ body: (UnsafeMutableBufferPointer<Element>) throws -> R
     ) rethrows -> R {
@@ -92,23 +61,20 @@ extension State {
         }
     }
     
-    @inline(__always)
     public func withUnsafeBytes<R>(
         _ body: (UnsafeRawBufferPointer) throws -> R
     ) rethrows -> R {
-        try Swift.withUnsafeBytes(of: self, body)
+        try Swift.withUnsafeBytes(of: rows, body)
     }
     
-    @inline(__always)
     public mutating func withUnsafeMutableBytes<R>(
         _ body: (UnsafeMutableRawBufferPointer) throws -> R
     ) rethrows -> R {
-        try Swift.withUnsafeMutableBytes(of: &self, body)
+        try Swift.withUnsafeMutableBytes(of: &rows, body)
     }
 }
 
 extension UnsafeMutableBufferPointer {
-    @inline(__always)
     fileprivate static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.baseAddress == rhs.baseAddress && lhs.count == rhs.count
     }
