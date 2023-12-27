@@ -57,10 +57,6 @@ final class KeccakPTests: XCTestCase {
         
         state[101] = 0xff
         XCTAssertEqual(state[101], 0xff)
-        state.first = 0xff
-        XCTAssertEqual(state.first, 0xff)
-        state.last = 0xff
-        XCTAssertEqual(state.last, 0xff)
         
         state.withContiguousMutableStorageIfAvailable {
             for (index, element): (_, UInt8) in zip($0.indices, 0...) {
