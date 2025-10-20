@@ -1,19 +1,22 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 6.2
 
 import PackageDescription
 
 let package = Package(
-    name: "keccak-p-swift",
+    name: "keccak-swift",
     products: [
         .library(
-            name: "KeccakP",
-            targets: ["KeccakP"]),
+            name: "Keccak",
+            targets: ["Keccak"])
     ],
     targets: [
         .target(
-            name: "KeccakP"),
+            name: "Keccak",
+            swiftSettings: [
+                .strictMemorySafety()
+            ]),
         .testTarget(
-            name: "KeccakPTests",
-            dependencies: ["KeccakP"]),
+            name: "KeccakTests",
+            dependencies: ["Keccak"]),
     ]
 )
